@@ -1,0 +1,4 @@
+{
+    "sketch": "centralglovereceiver.ino",
+    "board": "arduino:mbed_nano:nano33ble"
+}

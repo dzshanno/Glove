@@ -1,0 +1,104 @@
+/*
+
+  Central Glove TRansmitter 2023
+
+  To send flex sensor (finger bend) values to a robot hand via BLE
+
+*/
+
+// include bluetooth library
+#include <ArduinoBLE.h>
+
+// Set the input pins the flex sensors are connected to
+
+int Flex1_pin = A0;
+int Flex2_pin = 0;
+int Flex3_pin = 0;
+int Flex4_pin = 0;
+int Flex5_pin = 0;
+
+// set the UUID of the BLE service
+BLEService FlexService("19B10000-E8F2-537E-4F6C-D104768A1214");
+
+// Set the UUID of the BLE characteristics for the flex sensor values
+
+BLEByteCharacteristic Flex1("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEByteCharacteristic Flex2("19B10002-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+
+
+
+// run the setup actions
+
+void setup() {
+
+  // initiate serial connection for feedback information
+  Serial.begin(9600);
+  while (!Serial);
+
+  // begin BLE initialization
+  if (!BLE.begin()) {
+    Serial.println("starting Bluetooth® Low Energy module failed!");
+
+    while (1);
+  }
+
+  // set advertised local name and service UUID:
+  BLE.setLocalName("Glove");
+  BLE.setAdvertisedService(FlexService);
+
+  // add the characteristic to the service
+  FlexService.addCharacteristic(Flex1);
+  FlexService.addCharacteristic(Flex2);
+
+  // add service
+  BLE.addService(FlexService);
+
+  // set the initial value for the characeristic:
+  Flex1.writeValue(0);
+  Flex2.writeValue(0);
+  // start advertising
+  BLE.advertise();
+
+  Serial.print("Advertising BLE Glove Peripheral as .....");
+  Serial.println("Glove");
+}
+
+void loop() {
+  // listen for Bluetooth® Low Energy peripherals to connect:
+  BLEDevice central = BLE.central();
+
+  // if a central is connected to peripheral:
+  if (central) {
+    Serial.print("Connected to central: ");
+    // print the central's MAC address:
+    Serial.println(central.address());
+
+    // while the central is still connected to peripheral:
+  while (central.connected()) {
+    int Flex1value = analogRead(Flex1_pin);
+    // BLE can only take a value up to 255 so check if its too high
+    if (Flex1value > 255) {
+      Serial.print("SPIKE - ");
+      Serial.print(Flex1value);
+      Flex1value = 255;
+    }
+    // write the flex sensort value to the BLE characteristic
+    Flex1.writeValue(Flex1value);
+    Serial.print("Flex1 Analog value = ");
+    Serial.println(Flex1value);
+        if (Flex1.written()) {
+            Serial.print("BLE Flex1 value");
+            Serial.println(Flex1.value());      
+        }
+      delay(10);
+      }
+
+    // when the central disconnects, print it out:
+    Serial.print(F("Disconnected from central: "));
+    Serial.println(central.address());
+    // then loop back round and listen for a connection from a BLE central device
+  }
+}
+
+// Other functions called by the setup and loop
+
