@@ -88,11 +88,11 @@ void loop()
     // while the central is still connected to peripheral:
     while (central.connected())
     {
-      sendflexvalue(Flex1_pin, Flex1, "Flex1");
-      sendflexvalue(Flex2_pin, Flex2, "Flex2");
-      sendflexvalue(Flex3_pin, Flex3, "Flex3");
-      sendflexvalue(Flex4_pin, Flex4, "Flex4");
-      sendflexvalue(Flex5_pin, Flex5, "Flex pinky");
+      sendflexvalue(Flex1_pin, Flex1, "Flex1", 700, 400);
+      sendflexvalue(Flex2_pin, Flex2, "Flex2", 700, 400);
+      sendflexvalue(Flex3_pin, Flex3, "Flex3", 700, 400);
+      sendflexvalue(Flex4_pin, Flex4, "Flex4", 700, 400);
+      sendflexvalue(Flex5_pin, Flex5, "Flex pinky", 700, 400);
     }
 
     // when the central disconnects, print it out:
@@ -103,10 +103,11 @@ void loop()
 }
 
 // Other functions called by the setup and loop
-void sendflexvalue(int pin, BLEByteCharacteristic characteristic, String name)
+void sendflexvalue(int pin, BLEByteCharacteristic characteristic, String name, int straight, int bent)
 {
 
   int Flexvalue = analogRead(pin);
+  Flexvalue = map((Flexvalue, 700, 400, 10, 170));
   // BLE can only take a value up to 255 so check if its too high
   if (Flexvalue > 255)
   {
