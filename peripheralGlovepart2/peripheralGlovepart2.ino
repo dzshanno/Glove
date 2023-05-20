@@ -107,7 +107,7 @@ void sendflexvalue(int pin, BLEByteCharacteristic characteristic, String name, i
 {
 
   int Flexvalue = analogRead(pin);
-  Flexvalue = map((Flexvalue, 700, 400, 10, 170));
+  Flexvalue = map(Flexvalue, 700, 400, 10, 170);
   // BLE can only take a value up to 255 so check if its too high
   if (Flexvalue > 255)
   {
