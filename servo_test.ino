@@ -99,7 +99,11 @@ void loop()
         myservo1.write(pos);
         delay(15);
     }
+<<<<<<< HEAD
     for (pos = max__servo; pos >= min_servo; pos -= 1)
+=======
+    for (pos = max__servo; pos >=min_servo; pos -= 1)
+>>>>>>> a6e8510a11401f70632d3728172f89b98f3d1de2
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo2.write(pos);
@@ -124,4 +128,8 @@ void loop()
         delay(15);
     }
     delay(400);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a6e8510a11401f70632d3728172f89b98f3d1de2

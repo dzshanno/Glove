@@ -48,7 +48,9 @@ void setup()
 
   // check fingers are working
   MoveServo(0, 95);
+  delay(500);
   MoveServo(0, 5);
+  delay(500);
   MoveServo(0, 95);
 
   // begin bluetooth initialization
