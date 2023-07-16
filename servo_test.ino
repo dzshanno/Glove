@@ -1,11 +1,11 @@
 
 #include <Servo.h>
 
-int finger1pin = A4;
+int finger1pin = A5;
 int finger2pin = A0;
 int finger3pin = A1;
 int finger4pin = A2;
-int finger5pin = A3;
+int finger5pin = A4;
 
 Servo myservo1;
 Servo myservo2;
