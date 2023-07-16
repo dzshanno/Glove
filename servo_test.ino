@@ -1,11 +1,14 @@
 
 #include <Servo.h>
 
-int finger1pin = 6;
-int finger2pin = 2;
-int finger3pin = 3;
-int finger4pin = 4;
-int finger5pin = 5;
+int finger1pin = A5;
+int finger2pin = A0;
+int finger3pin = A1;
+int finger4pin = A2;
+int finger5pin = A4;
+
+int min_servo = 5;
+int max__servo = 175;
 
 Servo myservo1;
 Servo myservo2;
@@ -15,12 +18,12 @@ Servo myservo5;
 // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
-int pos = 0;
-int pos1 = 0;
-int pos2 = 0;
-int pos3 = 0;
-int pos4 = 0;
-int pos5 = 0; // variable to store the servo position
+int pos = min_servo;
+int pos1 = min_servo;
+int pos2 = min_servo;
+int pos3 = min_servo;
+int pos4 = min_servo;
+int pos5 = min_servo; // variable to store the servo position
 
 void setup()
 {
@@ -35,88 +38,90 @@ void loop()
 {
 
     // close all fingers
-    for (pos = 0; pos <= 180; pos += 1)
+    for (pos = min_servo; pos <= max__servo; pos += 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo1.write(pos);
         myservo2.write(pos);
-        myservo3.write(180 - pos);
+        myservo3.write(170 - pos);
         myservo4.write(pos);
         myservo5.write(pos); // tell servo to go to position in variable 'pos'
         delay(15);           // waits 15 ms for the servo to reach the position
     }
-
+    delay(400);
     // open all fingers
-    for (pos = 180; pos >= 0; pos -= 1)
+    for (pos = max__servo; pos >= min_servo; pos -= 1)
     { // goes from 180 degrees to 0 degrees
         myservo1.write(pos);
         myservo2.write(pos);
-        myservo3.write(180 - pos);
+        myservo3.write(max__servo - pos);
         myservo4.write(pos);
         myservo5.write(pos); // tell servo to go to position in variable 'pos'
         delay(15);           // waits 15 ms for the servo to reach the position
     }
+    delay(400);
     // close fingers 1 by 1
-    for (pos = 0; pos <= 180; pos += 1)
+    for (pos = min_servo; pos <= max__servo; pos += 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo1.write(pos);
         delay(15);
     }
-    for (pos = 0; pos <= 180; pos += 1)
+    for (pos = min_servo; pos <= max__servo; pos += 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo2.write(pos);
         delay(15);
     }
-    for (pos = 0; pos <= 180; pos += 1)
+    for (pos = min_servo; pos <= max__servo; pos += 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
-        myservo3.write(180 - pos);
+        myservo3.write(max__servo - pos);
         delay(15);
     }
-    for (pos = 0; pos <= 180; pos += 1)
+    for (pos = min_servo; pos <= max__servo; pos += 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo4.write(pos);
         delay(15);
     }
-    for (pos = 0; pos <= 180; pos += 1)
+    for (pos = min_servo; pos <= max__servo; pos += 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo5.write(pos);
         delay(15);
     }
-
+    delay(400);
     // open fingers 1 by 1
-    for (pos = 180; pos >= 0; pos -= 1)
+    for (pos = max__servo; pos >= min_servo; pos -= 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo1.write(pos);
         delay(15);
     }
-    for (pos = 180; pos >= 0; pos -= 1)
+    for (pos = max__servo; pos >= min_servo; pos -= 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo2.write(pos);
         delay(15);
     }
-    for (pos = 180; pos >= 0; pos -= 1)
+    for (pos = max__servo; pos >= min_servo; pos -= 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
-        myservo3.write(180 - pos);
+        myservo3.write(max__servo - pos);
         delay(15);
     }
-    for (pos = 180; pos >= 0; pos -= 1)
+    for (pos = max__servo; pos >= min_servo; pos -= 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo4.write(pos);
         delay(15);
     }
-    for (pos = 180; pos >= 0; pos -= 1)
+    for (pos = max__servo; pos >= min_servo; pos -= 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         myservo5.write(pos);
         delay(15);
     }
+    delay(400);
 }

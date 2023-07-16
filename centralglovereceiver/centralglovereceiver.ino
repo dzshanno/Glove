@@ -13,19 +13,21 @@
 #include <Servo.h>
 
 // Set the output pins that the servos are connected to
-int Finger1Pin = 9;
-int Finger2Pin = 0;
-int Finger3Pin = 0;
-int Finger4Pin = 0;
-int Finger5pin = 0;
+int Finger1Pin = A4;
+int Finger2Pin = A0;
+int Finger3Pin = A1;
+int Finger4Pin = A2;
+int Finger5pin = A3;
 
+int fullbent[5] = {10, 10, 10, 10, 10};
+int straight[5] = {170, 170, 170, 170, 170};
 // set the imput pins the flex sensors are connected to ( in case of direct connection)
 
-int Flex1pin = 0;
-int Flex2pin = 0;
-int Flex3pin = 0;
-int Flex4pin = 0;
-int Flex5pin = 0;
+int Flex1pin = A5;
+int Flex2pin = A0;
+int Flex3pin = A1;
+int Flex4pin = A2;
+int Flex5pin = A4;
 
 // Set input mode to WIRED(0) or BLUETOOTH (1)
 
@@ -36,8 +38,13 @@ const char *GloveServiceUUID = "19B10000-E8F2-537E-4F6C-D104768A1214";
 const char *Flex1CharacteristicUUID = "19B10001-E8F2-537E-4F6C-D104768A1214";
 const char *Flex2CharacteristicUUID = "19B10002-E8F2-537E-4F6C-D104768A1214";
 
-// create servo objects
-Servo Finger1Servo;
+// create servo objects and put in an array
+Servo fingerServos[5] = {
+    Servo Finger1Servo,
+    Servo Finger2Servo,
+    Servo Finger3Servo,
+    Servo Finger4Servo,
+    Servo Finger5Servo};
 
 void setup()
 {
@@ -113,10 +120,10 @@ void loop()
         // reads the current value of the characteristics from bluetooth
         Flex1_characteristic.read();
 
-        int position;
-        Serial.print("Flex1: ");
-        printData(Flex1_characteristic.value(), Flex1_characteristic.valueLength());
-        position = hextoint(Flex1_characteristic.value(), Flex1_characteristic.valueLength());
+        int positions[5]; // array to hold the current positions ( percentage bent ofeach finger)
+
+        position[0] = hextoint(Flex1_characteristic.value(), Flex1_characteristic.valueLength());
+
         MoveServo(Finger1Servo, position);
         Serial.println();
         // wait a bit - not sure why?
@@ -170,4 +177,11 @@ void MoveServo(Servo moveservo, int position)
   Serial.print("Move to...");
   Serial.println(position); // sets the servo position according to the scaled value
   delay(1);
+}
+
+// bend a finger to a given percentage
+void bendFinger(int fingerNum, int percentBent)
+{
+  position = map(percentBent, 0, 100, straight(fingerNum), fullbent(fingerNum));
+  fingerServos[fingerNum].write(position)
 }
