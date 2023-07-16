@@ -11,16 +11,8 @@
 
 // Set the input pins the flex sensors are connected to
 
-int Flex1_pin = A0;
-int Flex2_pin = A1;
-int Flex3_pin = A2;
-int Flex4_pin = A3;
-int Flex5_pin = A4;
-
-int fullbent[5] = {10, 10, 10, 10, 10};
+int finger_pins[5] = {A0, A1, A2, A3, A4} int fullbent[5] = {10, 10, 10, 10, 10};
 int straight[5] = {170, 170, 170, 170, 170};
-
-int flexvalues[5] = {}
 
 // set the UUID of the BLE service
 BLEService FlexService("19B10000-E8F2-537E-4F6C-D104768A1214");
@@ -93,11 +85,11 @@ void loop()
     // while the central is still connected to peripheral:
     while (central.connected())
     {
-      sendflexvalue(Flex1_pin, Flex1, "Flex1", 700, 400);
-      sendflexvalue(Flex2_pin, Flex2, "Flex2", 700, 400);
-      sendflexvalue(Flex3_pin, Flex3, "Flex3", 700, 400);
-      sendflexvalue(Flex4_pin, Flex4, "Flex4", 700, 400);
-      sendflexvalue(Flex5_pin, Flex5, "Flex pinky", 700, 400);
+      sendflexvalue(0, Flex1, "Flex1", 700, 400);
+      sendflexvalue(1, Flex2, "Flex2", 700, 400);
+      sendflexvalue(2, Flex3, "Flex3", 700, 400);
+      sendflexvalue(3, Flex4, "Flex4", 700, 400);
+      sendflexvalue(4, Flex5, "Flex pinky", 700, 400);
     }
 
     // when the central disconnects, print it out:
@@ -110,12 +102,12 @@ void loop()
 // Other functions called by the setup and loop
 
 // send the value of the amount you want the finger to fliex
-void sendflexvalue(int pin, BLEByteCharacteristic characteristic, String name, int straight, int bent)
+void sendflexvalue(int finger, BLEByteCharacteristic characteristic, String name, int straight, int bent)
 {
 
-  getflexValues();
-  // BLE can only take a value up to 255 so check if its too high
-  if (Flexvalue > 255)
+  Flexvalue = mapflex(finger, analogRead(fingerpin[finger]))
+      // BLE can only take a value up to 255 so check if its too high
+      if (Flexvalue > 255)
   {
     Serial.print("SPIKE - ");
     Serial.print(Flexvalue);
@@ -129,16 +121,8 @@ void sendflexvalue(int pin, BLEByteCharacteristic characteristic, String name, i
   delay(10);
 }
 
-int getflexValues()
-{
-  flexvalues[0] = mapflex(0, analogRead(Flex1_pin))
-      flexvalues[1] = mapflex(1, analogRead(Flex2_pin))
-          flexvalues[2] = mapflex(2, analogRead(Flex3_pin))
-              flexvalues[3] = mapflex(3, analogRead(Flex4_pin))
-                  flexvalues[4] = mapflex(4, analogRead(Flex5_pin))
-}
-
 int mapflex(int finger, int value)
 {
-  flexPercent = map(value, straight[finger], fullbent[finger], 0, 100) return flexPercent
+  flexPercent = map(value, straight[finger], fullbent[finger], 0, 100);
+  return flexPercent;
 }
