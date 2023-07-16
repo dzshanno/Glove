@@ -92,7 +92,7 @@ void loop()
 void sendflexvalue(int finger, BLEByteCharacteristic characteristic, String name, int straight, int bent)
 {
 
-  int Flexvalue = mapflex(finger, analogRead(fingerpin[finger]));
+  int Flexvalue = mapflex(finger, analogRead(finger_pins[finger]));
   // BLE can only take a value up to 255 so check if its too high
   if (Flexvalue > 255)
   {
