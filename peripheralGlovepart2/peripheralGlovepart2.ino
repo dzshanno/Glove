@@ -4,6 +4,8 @@
 
   To send flex sensor (finger bend) values to a robot hand via BLE
 
+  this is the code for the glove
+
 */
 
 // include bluetooth library
@@ -11,7 +13,8 @@
 
 // Set the input pins the flex sensors are connected to
 
-int finger_pins[5] = {A0, A1, A2, A3, A4} int fullbent[5] = {10, 10, 10, 10, 10};
+int finger_pins[5] = {A0, A1, A2, A3, A4};
+int fullbent[5] = {10, 10, 10, 10, 10};
 int straight[5] = {170, 170, 170, 170, 170};
 
 // set the UUID of the BLE service
@@ -105,9 +108,9 @@ void loop()
 void sendflexvalue(int finger, BLEByteCharacteristic characteristic, String name, int straight, int bent)
 {
 
-  Flexvalue = mapflex(finger, analogRead(fingerpin[finger]))
-      // BLE can only take a value up to 255 so check if its too high
-      if (Flexvalue > 255)
+  int Flexvalue = mapflex(finger, analogRead(fingerpin[finger]));
+  // BLE can only take a value up to 255 so check if its too high
+  if (Flexvalue > 255)
   {
     Serial.print("SPIKE - ");
     Serial.print(Flexvalue);
@@ -123,6 +126,6 @@ void sendflexvalue(int finger, BLEByteCharacteristic characteristic, String name
 
 int mapflex(int finger, int value)
 {
-  flexPercent = map(value, straight[finger], fullbent[finger], 0, 100);
+  long flexPercent = map(value, straight[finger], fullbent[finger], 0, 100);
   return flexPercent;
 }
