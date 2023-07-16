@@ -45,7 +45,7 @@ void loop()
         myservo5.write(pos); // tell servo to go to position in variable 'pos'
         delay(15);           // waits 15 ms for the servo to reach the position
     }
-
+    delay(400);
     // open all fingers
     for (pos = 180; pos >= 0; pos -= 1)
     { // goes from 180 degrees to 0 degrees
@@ -56,6 +56,7 @@ void loop()
         myservo5.write(pos); // tell servo to go to position in variable 'pos'
         delay(15);           // waits 15 ms for the servo to reach the position
     }
+    delay(400);
     // close fingers 1 by 1
     for (pos = 0; pos <= 180; pos += 1)
     { // goes from 0 degrees to 180 degrees
@@ -87,7 +88,7 @@ void loop()
         myservo5.write(pos);
         delay(15);
     }
-
+    delay(400);
     // open fingers 1 by 1
     for (pos = 180; pos >= 0; pos -= 1)
     { // goes from 0 degrees to 180 degrees
@@ -119,4 +120,5 @@ void loop()
         myservo5.write(pos);
         delay(15);
     }
+    delay(400);
 }
