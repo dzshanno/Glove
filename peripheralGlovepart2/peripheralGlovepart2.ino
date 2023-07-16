@@ -14,8 +14,8 @@
 // Set the input pins the flex sensors are connected to
 
 int finger_pins[5] = {A0, A1, A2, A3, A4};
-int fullbent[5] = {10, 10, 10, 10, 10};
-int straight[5] = {170, 170, 170, 170, 170};
+int fullbent[5] = {161, 234, 218, 202, 14};
+int straight[5] = {348, 572, 488, 402, 2};
 
 // set the UUID of the BLE service
 BLEService FlexService("19B10000-E8F2-537E-4F6C-D104768A1214");
