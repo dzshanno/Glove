@@ -17,6 +17,11 @@ int Flex3_pin = A2;
 int Flex4_pin = A3;
 int Flex5_pin = A4;
 
+int fullbent[5] = {10, 10, 10, 10, 10};
+int straight[5] = {170, 170, 170, 170, 170};
+
+int flexvalues[5] = {}
+
 // set the UUID of the BLE service
 BLEService FlexService("19B10000-E8F2-537E-4F6C-D104768A1214");
 
@@ -103,11 +108,12 @@ void loop()
 }
 
 // Other functions called by the setup and loop
+
+// send the value of the amount you want the finger to fliex
 void sendflexvalue(int pin, BLEByteCharacteristic characteristic, String name, int straight, int bent)
 {
 
-  int Flexvalue = analogRead(pin);
-  Flexvalue = map(Flexvalue, 700, 400, 10, 170);
+  getflexValues();
   // BLE can only take a value up to 255 so check if its too high
   if (Flexvalue > 255)
   {
@@ -121,4 +127,18 @@ void sendflexvalue(int pin, BLEByteCharacteristic characteristic, String name, i
   Serial.print(" Value is ...");
   Serial.println(Flexvalue);
   delay(10);
+}
+
+int getflexValues()
+{
+  flexvalues[0] = mapflex(0, analogRead(Flex1_pin))
+      flexvalues[1] = mapflex(1, analogRead(Flex2_pin))
+          flexvalues[2] = mapflex(2, analogRead(Flex3_pin))
+              flexvalues[3] = mapflex(3, analogRead(Flex4_pin))
+                  flexvalues[4] = mapflex(4, analogRead(Flex5_pin))
+}
+
+int mapflex(int finger, int value)
+{
+  flexPercent = map(value, straight[finger], fullbent[finger], 0, 100) return flexPercent
 }
