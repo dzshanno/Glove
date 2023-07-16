@@ -22,11 +22,11 @@ BLEService FlexService("19B10000-E8F2-537E-4F6C-D104768A1214");
 
 // Set the UUID of the BLE characteristics for the flex sensor values
 
-BLEByteCharacteristic Flex1("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEByteCharacteristic Flex2("19B10002-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEByteCharacteristic Flex3("19B10003-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEByteCharacteristic Flex4("19B10004-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEByteCharacteristic Flex5("19B10005-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEShortCharacteristic Flex1("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEShortCharacteristic Flex2("19B10002-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEShortCharacteristic Flex3("19B10003-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEShortCharacteristic Flex4("19B10004-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEShortCharacteristic Flex5("19B10005-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
 // run the setup actions
 
 void setup()
@@ -89,7 +89,7 @@ void loop()
 // Other functions called by the setup and loop
 
 // send the value of the amount you want the finger to fliex
-void sendflexvalue(int finger, BLEByteCharacteristic characteristic, String name, int straight, int bent)
+void sendflexvalue(int finger, BLEShortCharacteristic characteristic, String name, int straight, int bent)
 {
 
   int Flexvalue = mapflex(finger, analogRead(finger_pins[finger]));

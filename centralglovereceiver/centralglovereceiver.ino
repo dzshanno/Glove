@@ -87,11 +87,11 @@ void loop()
 
       BLEService Glove_Service = peripheral.service(GloveServiceUUID);
 
-      BLECharacteristic Flex1_characteristic = Glove_Service.characteristic(Flex1CharacteristicUUID);
-      BLECharacteristic Flex2_characteristic = Glove_Service.characteristic(Flex2CharacteristicUUID);
-      BLECharacteristic Flex3_characteristic = Glove_Service.characteristic(Flex3CharacteristicUUID);
-      BLECharacteristic Flex4_characteristic = Glove_Service.characteristic(Flex4CharacteristicUUID);
-      BLECharacteristic Flex5_characteristic = Glove_Service.characteristic(Flex5CharacteristicUUID);
+      BLEShortCharacteristic Flex1_characteristic = Glove_Service.characteristic(Flex1CharacteristicUUID);
+      BLEShortCharacteristic Flex2_characteristic = Glove_Service.characteristic(Flex2CharacteristicUUID);
+      BLEShortCharacteristic Flex3_characteristic = Glove_Service.characteristic(Flex3CharacteristicUUID);
+      BLEShortCharacteristic Flex4_characteristic = Glove_Service.characteristic(Flex4CharacteristicUUID);
+      BLEShortCharacteristic Flex5_characteristic = Glove_Service.characteristic(Flex5CharacteristicUUID);
 
       while (peripheral.connected())
       {
@@ -105,11 +105,11 @@ void loop()
 
         int position[5]; // array to hold the current positions ( percentage bent ofeach finger)
 
-        position[0] = hextoint(Flex1_characteristic.value(), Flex1_characteristic.valueLength());
-        position[1] = hextoint(Flex2_characteristic.value(), Flex2_characteristic.valueLength());
-        position[2] = hextoint(Flex3_characteristic.value(), Flex3_characteristic.valueLength());
-        position[3] = hextoint(Flex4_characteristic.value(), Flex4_characteristic.valueLength());
-        position[4] = hextoint(Flex5_characteristic.value(), Flex5_characteristic.valueLength());
+        position[0] = Flex1_characteristic.value();
+        position[1] = Flex2_characteristic.value();
+        position[2] = Flex3_characteristic.value();
+        position[3] = Flex4_characteristic.value();
+        position[4] = Flex5_characteristic.value();
 
         MoveServo(0, position[0]);
         MoveServo(1, position[1]);
@@ -132,13 +132,6 @@ void loop()
 }
 
 // Other functions called by the setup and loop
-
-// to convert the first charater of the bluetooth value to and integer - must be a better way
-int hextoint(const unsigned char data2[], int length)
-{
-  int answer = data2[0];
-  return answer;
-}
 
 // move a given servo to a specific position
 void MoveServo(int finger, int position)
