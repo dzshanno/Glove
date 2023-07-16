@@ -32,16 +32,9 @@ BLEByteCharacteristic Flex5("19B10005-E8F2-537E-4F6C-D104768A1214", BLERead | BL
 void setup()
 {
 
-  // initiate serial connection for feedback information
-  Serial.begin(9600);
-  while (!Serial)
-    ;
-
   // begin BLE initialization
   if (!BLE.begin())
   {
-    Serial.println("starting Bluetooth® Low Energy module failed!");
-
     while (1)
       ;
   }
@@ -68,9 +61,6 @@ void setup()
   Flex5.writeValue(0);
   // start advertising
   BLE.advertise();
-
-  Serial.print("Advertising BLE Glove Peripheral as .....");
-  Serial.println("Glove");
 }
 
 void loop()
@@ -81,9 +71,6 @@ void loop()
   // if a central is connected to peripheral:
   if (central)
   {
-    Serial.print("Connected to central: ");
-    // print the central's MAC address:
-    Serial.println(central.address());
 
     // while the central is still connected to peripheral:
     while (central.connected())
@@ -95,9 +82,6 @@ void loop()
       sendflexvalue(4, Flex5, "Flex pinky", 700, 400);
     }
 
-    // when the central disconnects, print it out:
-    Serial.print(F("Disconnected from central: "));
-    Serial.println(central.address());
     // then loop back round and listen for a connection from a BLE central device
   }
 }
@@ -112,15 +96,10 @@ void sendflexvalue(int finger, BLEByteCharacteristic characteristic, String name
   // BLE can only take a value up to 255 so check if its too high
   if (Flexvalue > 255)
   {
-    Serial.print("SPIKE - ");
-    Serial.print(Flexvalue);
     Flexvalue = 255;
   }
   // write the flex sensort value to the BLE characteristic
   characteristic.writeValue(Flexvalue);
-  Serial.print(name);
-  Serial.print(" Value is ...");
-  Serial.println(Flexvalue);
   delay(10);
 }
 

@@ -38,11 +38,6 @@ Servo servos[5];
 void setup()
 {
 
-  // initiate serial connection for feedback information
-  Serial.begin(9600);
-  while (!Serial)
-    ;
-
   // attach servos
 
   servos[0].attach(Finger_pins[0]);
@@ -61,13 +56,10 @@ void setup()
   {
     if (!BLE.begin())
     {
-      Serial.println("starting Bluetooth® Low Energy module failed!");
 
       while (1)
         ;
     }
-
-    Serial.println("Bluetooth® Low Energy Central - Glove Receiver");
 
     // start scanning for Glove service by name
     BLE.scanForName(GLOVESERVICENAME);
@@ -87,18 +79,7 @@ void loop()
       // stop scan seeems to stop connection being dropped
       BLE.stopScan();
       // connect to the peripheral
-      Serial.println("Connecting to ...");
-      Serial.println(peripheral.localName());
 
-      if (peripheral.connect())
-      {
-        Serial.println("Connected");
-      }
-      else
-      {
-        Serial.println("Failed to connect!");
-        return;
-      }
       // discover the attributes of the service
       peripheral.discoverAttributes();
 
@@ -134,13 +115,11 @@ void loop()
         MoveServo(3, position[3]);
         MoveServo(4, position[4]);
 
-        Serial.println();
         // wait a bit - not sure why?
         delay(2);
       }
       // when the central disconnects, print it out:
-      Serial.print(F("Disconnected from peripheral: "));
-      Serial.println(peripheral.localName());
+
       // then loop back round and listen for a connection from a BLE central device
     }
   }
@@ -152,29 +131,10 @@ void loop()
 
 // Other functions called by the setup and loop
 
-// for printing out the details from the blluetooth byte value
-int printData(const unsigned char data[], int length)
-{
-  for (int i = 0; i < length; i++)
-  {
-    unsigned char b = data[i];
-
-    if (b < 16)
-    {
-      Serial.print("0");
-    }
-
-    Serial.print(b, HEX);
-    Serial.println();
-  }
-}
-
 // to convert the first charater of the bluetooth value to and integer - must be a better way
 int hextoint(const unsigned char data2[], int length)
 {
   int answer = data2[0];
-  Serial.print("As int = ");
-  Serial.println(answer);
   return answer;
 }
 
@@ -183,7 +143,5 @@ void MoveServo(int finger, int position)
 {
   position = map(position, 0, 100, straight[finger], fullbent[finger]);
   servos[finger].write(position);
-  Serial.print("Move to...");
-  Serial.println(position); // sets the servo position according to the scaled value
   delay(1);
 }
