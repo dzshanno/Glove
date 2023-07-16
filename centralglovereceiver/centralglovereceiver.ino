@@ -1,9 +1,11 @@
 /*
-  Central Glovve Receiver 2023
+ Central Glovve Receiver 2023
 
-  To control the servos in a robot hand using flex sensors in a glove
+ To control the servos in a robot hand using flex sensors in a glove
 
-  Trasnission via BLE so the set up can be wireless
+ Trasnission via BLE so the set up can be wireless
+
+ This is the code for the robot hand
 
 
 */
@@ -13,21 +15,10 @@
 #include <Servo.h>
 
 // Set the output pins that the servos are connected to
-int Finger1Pin = A4;
-int Finger2Pin = A0;
-int Finger3Pin = A1;
-int Finger4Pin = A2;
-int Finger5pin = A3;
 
+int Finger_pins[5] = {A4, A0, A1, A4, A5};
 int fullbent[5] = {10, 10, 10, 10, 10};
 int straight[5] = {170, 170, 170, 170, 170};
-// set the imput pins the flex sensors are connected to ( in case of direct connection)
-
-int Flex1pin = A5;
-int Flex2pin = A0;
-int Flex3pin = A1;
-int Flex4pin = A2;
-int Flex5pin = A4;
 
 // Set input mode to WIRED(0) or BLUETOOTH (1)
 
@@ -37,14 +28,12 @@ const String GLOVESERVICENAME = "Glove";
 const char *GloveServiceUUID = "19B10000-E8F2-537E-4F6C-D104768A1214";
 const char *Flex1CharacteristicUUID = "19B10001-E8F2-537E-4F6C-D104768A1214";
 const char *Flex2CharacteristicUUID = "19B10002-E8F2-537E-4F6C-D104768A1214";
+const char *Flex3CharacteristicUUID = "19B10003-E8F2-537E-4F6C-D104768A1214";
+const char *Flex4CharacteristicUUID = "19B10004-E8F2-537E-4F6C-D104768A1214";
+const char *Flex5CharacteristicUUID = "19B10005-E8F2-537E-4F6C-D104768A1214";
 
 // create servo objects and put in an array
-Servo fingerServos[5] = {
-    Servo Finger1Servo,
-    Servo Finger2Servo,
-    Servo Finger3Servo,
-    Servo Finger4Servo,
-    Servo Finger5Servo};
+Servo servos[5];
 
 void setup()
 {
@@ -56,12 +45,16 @@ void setup()
 
   // attach servos
 
-  Finger1Servo.attach(Finger1Pin);
+  servos[0].attach(Finger_pins[0]);
+  servos[1].attach(Finger_pins[1]);
+  servos[2].attach(Finger_pins[2]);
+  servos[3].attach(Finger_pins[3]);
+  servos[4].attach(Finger_pins[4]);
 
   // check fingers are working
-  MoveServo(Finger1Servo, 10);
-  MoveServo(Finger1Servo, 170);
-  MoveServo(Finger1Servo, 10);
+  MoveServo(0, 95);
+  MoveServo(0, 5);
+  MoveServo(0, 95);
 
   // begin bluetooth initialization
   if (USE_BLUETOOTH)
@@ -113,18 +106,34 @@ void loop()
 
       BLECharacteristic Flex1_characteristic = Glove_Service.characteristic(Flex1CharacteristicUUID);
       BLECharacteristic Flex2_characteristic = Glove_Service.characteristic(Flex2CharacteristicUUID);
+      BLECharacteristic Flex3_characteristic = Glove_Service.characteristic(Flex3CharacteristicUUID);
+      BLECharacteristic Flex4_characteristic = Glove_Service.characteristic(Flex4CharacteristicUUID);
+      BLECharacteristic Flex5_characteristic = Glove_Service.characteristic(Flex5CharacteristicUUID);
 
       while (peripheral.connected())
       {
 
         // reads the current value of the characteristics from bluetooth
         Flex1_characteristic.read();
+        Flex2_characteristic.read();
+        Flex3_characteristic.read();
+        Flex4_characteristic.read();
+        Flex5_characteristic.read();
 
-        int positions[5]; // array to hold the current positions ( percentage bent ofeach finger)
+        int position[5]; // array to hold the current positions ( percentage bent ofeach finger)
 
         position[0] = hextoint(Flex1_characteristic.value(), Flex1_characteristic.valueLength());
+        position[1] = hextoint(Flex2_characteristic.value(), Flex2_characteristic.valueLength());
+        position[2] = hextoint(Flex3_characteristic.value(), Flex3_characteristic.valueLength());
+        position[3] = hextoint(Flex4_characteristic.value(), Flex4_characteristic.valueLength());
+        position[4] = hextoint(Flex5_characteristic.value(), Flex5_characteristic.valueLength());
 
-        MoveServo(Finger1Servo, position);
+        MoveServo(0, position[0]);
+        MoveServo(1, position[1]);
+        MoveServo(2, position[2]);
+        MoveServo(3, position[3]);
+        MoveServo(4, position[4]);
+
         Serial.println();
         // wait a bit - not sure why?
         delay(2);
@@ -170,18 +179,11 @@ int hextoint(const unsigned char data2[], int length)
 }
 
 // move a given servo to a specific position
-void MoveServo(Servo moveservo, int position)
+void MoveServo(int finger, int position)
 {
-  position = map(position, 215, 65, 10, 170);
-  moveservo.write(position);
+  position = map(position, 0, 100, straight[finger], fullbent[finger]);
+  servos[finger].write(position);
   Serial.print("Move to...");
   Serial.println(position); // sets the servo position according to the scaled value
   delay(1);
-}
-
-// bend a finger to a given percentage
-void bendFinger(int fingerNum, int percentBent)
-{
-  position = map(percentBent, 0, 100, straight(fingerNum), fullbent(fingerNum));
-  fingerServos[fingerNum].write(position)
 }
