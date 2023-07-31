@@ -1,23 +1,16 @@
 /*
- Central Glovve Receiver 2023
-
- To control the servos in a robot hand using flex sensors in a glove
-
- Trasnission via BLE so the set up can be wireless
-
- This is the code for the robot hand
+ Test  receiving flex data over bluetooth
 
 
 */
 // include bluetooth library
 #include <ArduinoBLE.h>
-
 // include servo library
 #include <Servo.h>
+// include Serial library
 
 // Set the output pins that the servos are connected to
 
-int Finger_pins[5] = {A4, A0, A1, A4, A5};
 int fullbent[5] = {10, 10, 10, 10, 10};
 int straight[5] = {170, 170, 170, 170, 170};
 
@@ -33,26 +26,8 @@ const char *Flex3CharacteristicUUID = "19B10003-E8F2-537E-4F6C-D104768A1214";
 const char *Flex4CharacteristicUUID = "19B10004-E8F2-537E-4F6C-D104768A1214";
 const char *Flex5CharacteristicUUID = "19B10005-E8F2-537E-4F6C-D104768A1214";
 
-// create servo objects and put in an array
-Servo servos[5];
-
 void setup()
 {
-
-  // attach servos
-
-  servos[0].attach(Finger_pins[0]);
-  servos[1].attach(Finger_pins[1]);
-  servos[2].attach(Finger_pins[2]);
-  servos[3].attach(Finger_pins[3]);
-  servos[4].attach(Finger_pins[4]);
-
-  // check fingers are working
-  MoveServo(0, 95);
-  delay(500);
-  MoveServo(0, 5);
-  delay(500);
-  MoveServo(0, 95);
 
   // begin bluetooth initialization
   if (USE_BLUETOOTH)
@@ -119,7 +94,7 @@ void loop()
         MoveServo(4, position[4]);
 
         // wait a bit - not sure why?
-        delay(2);
+        delay(1000);
       }
       // when the central disconnects, print it out:
 
@@ -137,7 +112,5 @@ void loop()
 // move a given servo to a specific position
 void MoveServo(int finger, int position)
 {
-  position = map(position, 0, 100, straight[finger], fullbent[finger]);
-  servos[finger].write(position);
-  delay(1);
+  Serial.println("received " + position + " for flex" + finger);
 }

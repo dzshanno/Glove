@@ -82,7 +82,7 @@ void loop()
             sendfixedvalue(2, Flex3, "Flex1", a);
             sendfixedvalue(3, Flex4, "Flex1", a);
             sendfixedvalue(4, Flex5, "Flex1", a);
-            delay(500);
+            delay(1500);
         }
 
         // then loop back round and listen for a connection from a BLE central device
@@ -96,10 +96,4 @@ void sendfixedvalue(int finger, BLEShortCharacteristic characteristic, String na
     // write the flex sensort value to the BLE characteristic
     characteristic.writeValue(value);
     delay(10);
-}
-
-int mapflex(int finger, int value)
-{
-    long flexPercent = map(value, straight[finger], fullbent[finger], 0, 100);
-    return flexPercent;
 }
