@@ -26,8 +26,7 @@ void setup()
 
   // initiate serial connection for feedback information
   Serial.begin(9600);
-  while (!Serial)
-    ;
+  while (!Serial);
 
   // begin BLE initialization
   if (!BLE.begin())

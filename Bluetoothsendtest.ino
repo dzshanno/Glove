@@ -13,11 +13,11 @@ BLEService FlexService("19B10000-E8F2-537E-4F6C-D104768A1214");
 
 // Set the UUID of the BLE characteristics for the flex sensor values
 
-BLEShortCharacteristic Flex1("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEShortCharacteristic Flex2("19B10002-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEShortCharacteristic Flex3("19B10003-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEShortCharacteristic Flex4("19B10004-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
-BLEShortCharacteristic Flex5("19B10005-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
+BLEIntCharacteristic Flex1("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite | BLEBroadcast);
+BLEIntCharacteristic Flex2("19B10002-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite | BLEBroadcast);
+BLEIntCharacteristic Flex3("19B10003-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite | BLEBroadcast);
+BLEIntCharacteristic Flex4("19B10004-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite | BLEBroadcast);
+BLEIntCharacteristic Flex5("19B10005-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite | BLEBroadcast);
 // run the setup actions
 
 void setup()
@@ -75,7 +75,7 @@ void loop()
             }
             if (a <= 20)
             {
-                step = 10
+                step = 10;
             }
             sendfixedvalue(0, Flex1, "Flex1", a);
             sendfixedvalue(1, Flex2, "Flex1", a);
@@ -91,9 +91,10 @@ void loop()
 
 // Other functions called by the setup and loop
 
-void sendfixedvalue(int finger, BLEShortCharacteristic characteristic, String name, int value)
+void sendfixedvalue(int finger, BLEIntCharacteristic characteristic, String name, int value)
 {
     // write the flex sensort value to the BLE characteristic
     characteristic.writeValue(value);
+    Serial.println(value);
     delay(10);
 }

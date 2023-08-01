@@ -9,10 +9,6 @@
 #include <Servo.h>
 // include Serial library
 
-// Set the output pins that the servos are connected to
-
-int fullbent[5] = {10, 10, 10, 10, 10};
-int straight[5] = {170, 170, 170, 170, 170};
 
 // Set input mode to WIRED(0) or BLUETOOTH (1)
 
