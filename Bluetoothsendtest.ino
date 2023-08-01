@@ -32,6 +32,7 @@ void setup()
 
     // set advertised local name and service UUID:
     BLE.setLocalName("Glove");
+    BLE.setDeviceName("Glovedevice");
     BLE.setAdvertisedService(FlexService);
 
     // add the characteristic to the service
