@@ -98,7 +98,7 @@ void controlLed(BLEDevice peripheral)
 
     // retrieve the LED/OLED characteristic
     BLECharacteristic ledCharacteristic = peripheral.characteristic("19b10001-e8f2-537e-4f6c-d104768a1214");
-    BLECharacteristic oledCharacteristic = peripheral.characteristic(MyStringChar_UUID);
+    BLECharacteristic flex1Characteristic = peripheral.characteristic(MyStringChar_UUID);
 
     /*
     if (!ledCharacteristic) {
@@ -144,7 +144,7 @@ void controlLed(BLEDevice peripheral)
         {
             String stringIn = Serial.readString();
             Serial.println(stringIn);
-            oledCharacteristic.writeValue(stringIn.c_str());
+            flex1Characteristic.writeValue(stringIn.c_str());
         }
     }
 

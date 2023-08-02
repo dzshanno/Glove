@@ -19,13 +19,13 @@
 
 U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/U8X8_PIN_NONE);
 
-BLEService ledService("19B10000-E8F2-537E-4F6C-D104768A1214"); // create service
+BLEService flexService("19B10000-E8F2-537E-4F6C-D104768A1214"); // create service
 
 // create switch characteristic and allow remote device to read and write
 BLEByteCharacteristic switchCharacteristic(
     "19B10001-E8F2-537E-4F6C-D104768A1214",
     BLERead | BLEWrite);
-BLEStringCharacteristic myStringCharacteristic(
+BLEStringCharacteristic flex1Characteristic(
     MyStringChar_UUID,
     BLERead | BLEWrite, 16);
 
@@ -60,14 +60,14 @@ void setup()
     // set the local name peripheral advertises
     BLE.setLocalName(MyLocalName);
     // set the UUID for the service this peripheral advertises
-    BLE.setAdvertisedService(ledService);
+    BLE.setAdvertisedService(flexService);
 
     // add the characteristic to the service
-    ledService.addCharacteristic(switchCharacteristic);
-    ledService.addCharacteristic(myStringCharacteristic);
+    flexService.addCharacteristic(switchCharacteristic);
+    flexService.addCharacteristic(flex1Characteristic);
 
     // add service
-    BLE.addService(ledService);
+    BLE.addService(flexService);
 
     // assign event handlers for connected, disconnected to peripheral
     BLE.setEventHandler(BLEConnected, blePeripheralConnectHandler);
@@ -75,10 +75,10 @@ void setup()
 
     // assign event handlers for characteristic
     switchCharacteristic.setEventHandler(BLEWritten, switchCharacteristicWritten);
-    myStringCharacteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
+    flex1Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
     // set an initial value for the characteristic
     switchCharacteristic.setValue(0);
-    myStringCharacteristic.setValue("XIAO BLE");
+    flex1Characteristic.setValue("XIAO BLE");
 
     // start advertising
     BLE.advertise();
@@ -130,9 +130,9 @@ void myStringCharacteristicWritten(BLEDevice central,
     // central wrote new value to characteristic, update SCREEN
     Serial.println("mySttringCharacteristic event, written: ");
 
-    Serial.println("myStringCharacteristic received: len=" +
-                   String(myStringCharacteristic.valueLength()));
-    String valString = myStringCharacteristic.value();
+    Serial.println("flex1Characteristic received: len=" +
+                   String(flex1Characteristic.valueLength()));
+    String valString = flex1Characteristic.value();
     Serial.println(valString);
 
     u8x8.clear();
