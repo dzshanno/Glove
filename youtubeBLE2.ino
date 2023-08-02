@@ -119,7 +119,8 @@ void controlLed(BLEDevice peripheral)
       return;
     }
     */
-
+    int a = 1;
+    int step = 10;
     while (peripheral.connected())
     {
         // while the peripheral is connected
@@ -154,6 +155,17 @@ void controlLed(BLEDevice peripheral)
             Serial.println(stringIn);
             flex1Characteristic.writeValue(stringIn.c_str());
         }
+        a = a + step;
+        if (a > 100)
+        {
+            a = 5;
+        }
+        flex1Characteristic.writeValue(String(a).c_str());
+        flex2Characteristic.writeValue(String(a + 1).c_str());
+        flex3Characteristic.writeValue(String(a + 2).c_str());
+        flex4Characteristic.writeValue(String(a + 3).c_str());
+        flex5Characteristic.writeValue(String(a + 4).c_str());
+        delay(1000);
     }
 
     Serial.println("Peripheral disconnected");

@@ -14,6 +14,18 @@
 #include <U8x8lib.h>
 #include <Wire.h>
 
+// include servo library
+#include <Servo.h>
+
+// Set the output pins that the servos are connected to
+
+int Finger_pins[5] = {A4, A0, A1, A4, A5};
+int fullbent[5] = {10, 10, 10, 10, 10};
+int straight[5] = {170, 170, 170, 170, 170};
+
+// create servo objects and put in an array
+Servo servos[5];
+
 #define MyLocalName "XIAO BLE"
 #define FLEX1_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd70"
 #define FLEX2_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd71"
@@ -58,6 +70,14 @@ void setup()
 
     Serial.begin(9600);
 
+    // attach servos
+
+    servos[0].attach(Finger_pins[0]);
+    servos[1].attach(Finger_pins[1]);
+    servos[2].attach(Finger_pins[2]);
+    servos[3].attach(Finger_pins[3]);
+    servos[4].attach(Finger_pins[4]);
+
     // comment to skip Serial port waiting,
     // such that it can sork stand alone without computer.
     // while (!Serial);
@@ -95,14 +115,18 @@ void setup()
 
     // assign event handlers for characteristic
     switchCharacteristic.setEventHandler(BLEWritten, switchCharacteristicWritten);
-    flex1Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
-    flex2Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
-    flex3Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
-    flex4Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
-    flex5Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
+    flex1Characteristic.setEventHandler(BLEWritten, Flex1CharacteristicWritten);
+    flex2Characteristic.setEventHandler(BLEWritten, Flex2CharacteristicWritten);
+    flex3Characteristic.setEventHandler(BLEWritten, Flex3CharacteristicWritten);
+    flex4Characteristic.setEventHandler(BLEWritten, Flex4CharacteristicWritten);
+    flex5Characteristic.setEventHandler(BLEWritten, Flex5CharacteristicWritten);
     // set an initial value for the characteristic
     switchCharacteristic.setValue(0);
     flex1Characteristic.setValue("I'm flex 1");
+    flex2Characteristic.setValue("I'm flex 2");
+    flex3Characteristic.setValue("I'm flex 3");
+    flex4Characteristic.setValue("I'm flex 4");
+    flex5Characteristic.setValue("I'm flex 5");
 
     // start advertising
     BLE.advertise();
@@ -148,8 +172,8 @@ void switchCharacteristicWritten(BLEDevice central,
     }
 }
 
-void myStringCharacteristicWritten(BLEDevice central,
-                                   BLECharacteristic characteristic)
+void Flex1CharacteristicWritten(BLEDevice central,
+                                BLECharacteristic characteristic)
 {
     // central wrote new value to characteristic, update SCREEN
     Serial.println("mySttringCharacteristic event, written: ");
@@ -158,10 +182,91 @@ void myStringCharacteristicWritten(BLEDevice central,
                    String(flex1Characteristic.valueLength()));
     String valString = flex1Characteristic.value();
     Serial.println(valString);
+    MoveServo(1, valString.toInt());
 
-    u8x8.clear();
+    // u8x8.clear();
     u8x8.setCursor(0, 0);
     u8x8.print(valString);
 
     Serial.println();
+}
+
+void Flex2CharacteristicWritten(BLEDevice central,
+                                BLECharacteristic characteristic)
+{
+    // central wrote new value to characteristic, update SCREEN
+    Serial.println("mySttringCharacteristic event, written: ");
+
+    Serial.println("flex2Characteristic received: len=" +
+                   String(flex2Characteristic.valueLength()));
+    String valString = flex2Characteristic.value();
+    Serial.println(valString);
+    MoveServo(2, valString.toInt());
+
+    // u8x8.clear();
+    u8x8.setCursor(0, 1);
+    u8x8.print(valString);
+
+    Serial.println();
+}
+void Flex3CharacteristicWritten(BLEDevice central,
+                                BLECharacteristic characteristic)
+{
+    // central wrote new value to characteristic, update SCREEN
+    Serial.println("mySttringCharacteristic event, written: ");
+
+    Serial.println("flex3Characteristic received: len=" +
+                   String(flex3Characteristic.valueLength()));
+    String valString = flex3Characteristic.value();
+    Serial.println(valString);
+    MoveServo(3, valString.toInt());
+
+    // u8x8.clear();
+    u8x8.setCursor(0, 2);
+    u8x8.print(valString);
+
+    Serial.println();
+}
+void Flex4CharacteristicWritten(BLEDevice central,
+                                BLECharacteristic characteristic)
+{
+    // central wrote new value to characteristic, update SCREEN
+    Serial.println("mySttringCharacteristic event, written: ");
+
+    Serial.println("flex4Characteristic received: len=" +
+                   String(flex4Characteristic.valueLength()));
+    String valString = flex4Characteristic.value();
+    Serial.println(valString);
+    MoveServo(4, valString.toInt());
+
+    // u8x8.clear();
+    u8x8.setCursor(0, 3);
+    u8x8.print(valString);
+
+    Serial.println();
+}
+void Flex5CharacteristicWritten(BLEDevice central,
+                                BLECharacteristic characteristic)
+{
+    // central wrote new value to characteristic, update SCREEN
+    Serial.println("myStringCharacteristic event, written: ");
+
+    Serial.println("flex5Characteristic received: len=" +
+                   String(flex5Characteristic.valueLength()));
+    String valString = flex5Characteristic.value();
+    Serial.println(valString);
+
+    MoveServo(5, valString.toInt());
+    // u8x8.clear();
+    u8x8.setCursor(0, 4);
+    u8x8.print(valString);
+
+    Serial.println();
+}
+
+// move a given servo to a specific position
+void MoveServo(int finger, int position)
+{
+    position = map(position, 0, 100, straight[finger], fullbent[finger]);
+    servos[finger].write(position);
 }
