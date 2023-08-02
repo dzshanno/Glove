@@ -1,20 +1,12 @@
 /*
-  run on Aduino RP2040 NANO Connect
+  run on Seeed Xiao with glove and flex sensors
 
   This example scans for BLE peripherals until one with the advertised service
-  "19b10000-e8f2-537e-4f6c-d104768a1214" UUID is found. Once discovered and connected,
-  it will remotely control the BLE Peripheral's LED, when the button is pressed or released.
+  "19b10000-e8f2-537e-4f6c-d104768a1214" UUID is found.
 
-  And also get user input from Serial Monitor, send to BLE Peripheral
-
-  modified from ArduinoBLE > Central > LedControl
 */
 
 #include <ArduinoBLE.h>
-
-// variables for button
-const int buttonPin = 2;
-int oldButtonState = LOW;
 
 #define MyLocalName "XIAO BLE"
 #define FLEX1_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd70"
@@ -23,19 +15,22 @@ int oldButtonState = LOW;
 #define FLEX4_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd73"
 #define FLEX5_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd74"
 
+// Set the input pins the flex sensors are connected to
+
+int Flex1_pin = A0;
+int Flex2_pin = A1;
+int Flex3_pin = A2;
+int Flex4_pin = A4;
+int Flex5_pin = A5;
+
 void setup()
 {
     Serial.begin(9600);
-    while (!Serial)
-        ;
-
-    // configure the button pin as input
-    pinMode(buttonPin, INPUT_PULLUP);
 
     // initialize the BLE hardware
     BLE.begin();
 
-    Serial.println("BLE Central - LED control");
+    Serial.println("BLE Central - SERVO control");
 
     // start scanning for peripherals
     BLE.scanForUuid("19b10000-e8f2-537e-4f6c-d104768a1214");
@@ -68,6 +63,8 @@ void loop()
         controlLed(peripheral);
 
         // peripheral disconnected, start scanning again
+        Serial.print("scanning for peripheral again after disconnect");
+        Serial.println();
         BLE.scanForUuid("19b10000-e8f2-537e-4f6c-d104768a1214");
     }
 }
@@ -101,72 +98,42 @@ void controlLed(BLEDevice peripheral)
     }
 
     // retrieve the LED/OLED characteristic
-    BLECharacteristic ledCharacteristic = peripheral.characteristic("19b10001-e8f2-537e-4f6c-d104768a1214");
     BLECharacteristic flex1Characteristic = peripheral.characteristic(FLEX1_CHARACTERISTIC_UUID);
     BLECharacteristic flex2Characteristic = peripheral.characteristic(FLEX2_CHARACTERISTIC_UUID);
     BLECharacteristic flex3Characteristic = peripheral.characteristic(FLEX3_CHARACTERISTIC_UUID);
     BLECharacteristic flex4Characteristic = peripheral.characteristic(FLEX4_CHARACTERISTIC_UUID);
     BLECharacteristic flex5Characteristic = peripheral.characteristic(FLEX5_CHARACTERISTIC_UUID);
 
-    /*
-    if (!ledCharacteristic) {
-      Serial.println("Peripheral does not have LED characteristic!");
-      peripheral.disconnect();
-      return;
-    } else if (!ledCharacteristic.canWrite()) {
-      Serial.println("Peripheral does not have a writable LED characteristic!");
-      peripheral.disconnect();
-      return;
-    }
-    */
-    int a = 1;
-    int step = 10;
     while (peripheral.connected())
     {
         // while the peripheral is connected
 
-        // read the button pin
-        int buttonState = !digitalRead(buttonPin);
-
-        if (oldButtonState != buttonState)
-        {
-            // button changed
-            oldButtonState = buttonState;
-
-            if (buttonState)
-            {
-                Serial.println("button pressed");
-
-                // button is pressed, write 0x01 to turn the LED on
-                ledCharacteristic.writeValue((byte)0x01);
-            }
-            else
-            {
-                Serial.println("button released");
-
-                // button is released, write 0x00 to turn the LED off
-                ledCharacteristic.writeValue((byte)0x00);
-            }
-        }
-
-        if (Serial.available() > 0)
-        {
-            String stringIn = Serial.readString();
-            Serial.println(stringIn);
-            flex1Characteristic.writeValue(stringIn.c_str());
-        }
-        a = a + step;
-        if (a > 100)
-        {
-            a = 5;
-        }
-        flex1Characteristic.writeValue(String(a).c_str());
-        flex2Characteristic.writeValue(String(a + 1).c_str());
-        flex3Characteristic.writeValue(String(a + 2).c_str());
-        flex4Characteristic.writeValue(String(a + 3).c_str());
-        flex5Characteristic.writeValue(String(a + 4).c_str());
-        delay(1000);
+        sendflexvalue(Flex1_pin, flex1Characteristic, "Flex1", 240, 170);
+        sendflexvalue(Flex2_pin, flex2Characteristic, "Flex2", 450, 260);
+        sendflexvalue(Flex3_pin, flex3Characteristic, "Flex3", 380, 260);
+        sendflexvalue(Flex4_pin, flex4Characteristic, "Flex4", 320, 230);
+        sendflexvalue(Flex5_pin, flex5Characteristic, "Flex5", 415, 280);
+        delay(100);
     }
 
     Serial.println("Peripheral disconnected");
+}
+
+void sendflexvalue(int pin, BLECharacteristic characteristic, String name, int straight, int bent)
+{
+
+    int Flexvalue = analogRead(pin);
+    Flexvalue = map(Flexvalue, straight, bent, 10, 90);
+    // BLE can only take a value up to 255 so check if its too high
+    if (Flexvalue > 255)
+    {
+        Serial.print("SPIKE - ");
+        Serial.print(Flexvalue);
+        Flexvalue = 255;
+    }
+    // write the flex sensort value to the BLE characteristic
+    characteristic.writeValue(String(Flexvalue).c_str());
+    Serial.print(name);
+    Serial.print(" Value is ...");
+    Serial.println(Flexvalue);
 }
