@@ -9,7 +9,6 @@
 #include <Servo.h>
 // include Serial library
 
-
 // Set input mode to WIRED(0) or BLUETOOTH (1)
 
 bool USE_BLUETOOTH = 1;
@@ -55,7 +54,18 @@ void loop()
       // connect to the peripheral
 
       // discover the attributes of the service
-      peripheral.discoverAttributes();
+      // discover peripheral attributes
+      Serial.println("Discovering attributes ...");
+      if (peripheral.discoverAttributes())
+      {
+        Serial.println("Attributes discovered");
+      }
+      else
+      {
+        Serial.println("Attribute discovery failed!");
+        peripheral.disconnect();
+        continue;
+      }
 
       BLEService Glove_Service = peripheral.service(GloveServiceUUID);
 
