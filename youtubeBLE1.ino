@@ -15,7 +15,11 @@
 #include <Wire.h>
 
 #define MyLocalName "XIAO BLE"
-#define MyStringChar_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd70"
+#define FLEX1_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd70"
+#define FLEX2_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd71"
+#define FLEX3_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd72"
+#define FLEX4_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd73"
+#define FLEX5_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd74"
 
 U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(/* reset=*/U8X8_PIN_NONE);
 
@@ -26,7 +30,19 @@ BLEByteCharacteristic switchCharacteristic(
     "19B10001-E8F2-537E-4F6C-D104768A1214",
     BLERead | BLEWrite);
 BLEStringCharacteristic flex1Characteristic(
-    MyStringChar_UUID,
+    FLEX1_CHARACTERISTIC_UUID,
+    BLERead | BLEWrite, 16);
+BLEStringCharacteristic flex2Characteristic(
+    FLEX2_CHARACTERISTIC_UUID,
+    BLERead | BLEWrite, 16);
+BLEStringCharacteristic flex3Characteristic(
+    FLEX3_CHARACTERISTIC_UUID,
+    BLERead | BLEWrite, 16);
+BLEStringCharacteristic flex4Characteristic(
+    FLEX4_CHARACTERISTIC_UUID,
+    BLERead | BLEWrite, 16);
+BLEStringCharacteristic flex5Characteristic(
+    FLEX5_CHARACTERISTIC_UUID,
     BLERead | BLEWrite, 16);
 
 const int ledPin = LED_BUILTIN; // pin to use for the LED
@@ -65,6 +81,10 @@ void setup()
     // add the characteristic to the service
     flexService.addCharacteristic(switchCharacteristic);
     flexService.addCharacteristic(flex1Characteristic);
+    flexService.addCharacteristic(flex2Characteristic);
+    flexService.addCharacteristic(flex3Characteristic);
+    flexService.addCharacteristic(flex4Characteristic);
+    flexService.addCharacteristic(flex5Characteristic);
 
     // add service
     BLE.addService(flexService);
@@ -76,9 +96,13 @@ void setup()
     // assign event handlers for characteristic
     switchCharacteristic.setEventHandler(BLEWritten, switchCharacteristicWritten);
     flex1Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
+    flex2Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
+    flex3Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
+    flex4Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
+    flex5Characteristic.setEventHandler(BLEWritten, myStringCharacteristicWritten);
     // set an initial value for the characteristic
     switchCharacteristic.setValue(0);
-    flex1Characteristic.setValue("XIAO BLE");
+    flex1Characteristic.setValue("I'm flex 1");
 
     // start advertising
     BLE.advertise();

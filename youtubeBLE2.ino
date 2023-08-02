@@ -17,7 +17,11 @@ const int buttonPin = 2;
 int oldButtonState = LOW;
 
 #define MyLocalName "XIAO BLE"
-#define MyStringChar_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd70"
+#define FLEX1_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd70"
+#define FLEX2_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd71"
+#define FLEX3_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd72"
+#define FLEX4_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd73"
+#define FLEX5_CHARACTERISTIC_UUID "22a28815-c6bd-401b-a0f1-d47c42a0bd74"
 
 void setup()
 {
@@ -98,7 +102,11 @@ void controlLed(BLEDevice peripheral)
 
     // retrieve the LED/OLED characteristic
     BLECharacteristic ledCharacteristic = peripheral.characteristic("19b10001-e8f2-537e-4f6c-d104768a1214");
-    BLECharacteristic flex1Characteristic = peripheral.characteristic(MyStringChar_UUID);
+    BLECharacteristic flex1Characteristic = peripheral.characteristic(FLEX1_CHARACTERISTIC_UUID);
+    BLECharacteristic flex2Characteristic = peripheral.characteristic(FLEX2_CHARACTERISTIC_UUID);
+    BLECharacteristic flex3Characteristic = peripheral.characteristic(FLEX3_CHARACTERISTIC_UUID);
+    BLECharacteristic flex4Characteristic = peripheral.characteristic(FLEX4_CHARACTERISTIC_UUID);
+    BLECharacteristic flex5Characteristic = peripheral.characteristic(FLEX5_CHARACTERISTIC_UUID);
 
     /*
     if (!ledCharacteristic) {
